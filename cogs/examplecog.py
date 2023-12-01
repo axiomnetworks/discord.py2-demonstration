@@ -1,37 +1,16 @@
-import discord, os, asyncio
+import discord, traceback
 from discord.ext import commands
+from discord import app_commands
 
-intents = discord.Intents.all()
+class ExampleCog(commands.Cog):
 
-prefix = ["prefix!", "PREFIX!"] # edit the prefix to whatever you'd like
+    def __init__(self, bot : commands.Bot) -> None:
+        self.bot = bot
 
-client = commands.Bot(command_prefix=prefix, case_insensitive=True, intents=intents)
+    @app_commands.command(name="yourcommandname", description="Your commands description")
+    async def yourcommandname(self, interaction : discord.Interaction, exampleargument : str):
+        await interaction.response.send_message(exampleargument)
 
-@client.event
-async def on_ready():
-    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="the demonstration")) # you may edit the status
-    print("Logged in!")
-
-@client.command()
-async def sync(ctx) -> None:
-    try:
-        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
-        await ctx.send(f"Synced {len(fmt)} commands.")
-    except Exception as e:
-        print(e)
-
-async def load():
-    for file in os.listdir("./cogs"):
-        if file.endswith(".py"):
-            try:
-                print(f"Attempting to load {file[:-3]}")
-                await client.load_extension(f"cogs.{file[:-3]}")
-            except Exception as e:
-                print(f"Failed to load extension {file[:-3]}")
-                print(e)
-
-async def main():
-    await load()
-    await client.start("INSERT BOT TOKEN")
-
-asyncio.run(main())
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(ExampleCog(bot), guilds=[discord.Object(id=0)]) # edit the ID to be your servers ID
+    print("Clock in cog loaded\n---")
