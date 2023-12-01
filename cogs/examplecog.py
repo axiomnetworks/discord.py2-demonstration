@@ -13,4 +13,4 @@ class ExampleCog(commands.Cog):
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(ExampleCog(bot), guilds=[discord.Object(id=0)]) # edit the ID to be your servers ID
-    print("Clock in cog loaded\n---")
+    print("ExampleCog Loaded\n---")
